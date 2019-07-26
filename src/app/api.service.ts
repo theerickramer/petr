@@ -27,6 +27,6 @@ export class ApiService {
         'Content-Type': 'application/json'
       })
     };
-    return this.httpClient.post(url, data, options);
+    return this.httpClient.post<Response>(url, data, options);
   }
 }
