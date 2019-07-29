@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
       const pic = this.included.find(include => include.id === picId);
       return pic.attributes.large.url;
     }
-    return 'https://vignette.wikia.nocookie.net/warriorcatsclanroleplay/images/f/fc/Placeholder-pet.png/revision/latest?cb=20130716185616';
+    return 'https://vignette.wikia.nocookie.net/warriorcatsclanroleplay/images/f/fc/Placeholder-pet.png';
   }
   ngOnInit() {
     this.apiService.getPets().subscribe(response => {
