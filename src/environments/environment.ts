@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiKey: process.env.RESCUEGROUPS_KEY
+  RESCUEGROUPS_KEY: process.env.RESCUEGROUPS_KEY,
+  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY
 };
 
 /*

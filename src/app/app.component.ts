@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
   title = 'Petr';
   pets: any[];
   included: any[];
+
   constructor(private apiService: ApiService) {}
   public getPicUrl(picturesData: any[]) {
     if (picturesData.length > 0) {
@@ -21,10 +22,28 @@ export class AppComponent implements OnInit {
     return 'https://vignette.wikia.nocookie.net/warriorcatsclanroleplay/images/f/fc/Placeholder-pet.png';
   }
   ngOnInit() {
-    this.apiService.getPets().subscribe(response => {
-      console.log(response);
-      this.pets = response.data;
-      this.included = response.included;
+    navigator.geolocation.getCurrentPosition(position => {
+      let zip = 90210;
+      const { latitude, longitude } = position.coords;
+      const geocoder = new google.maps.Geocoder();
+      const latlng = new google.maps.LatLng(latitude, longitude);
+      geocoder.geocode({ location: latlng }, (results, status) => {
+        if (String(status) === 'OK') {
+          zip = parseInt(
+            results
+              .find(result => result.types.includes('postal_code'))
+              .address_components.find(component =>
+                component.types.includes('postal_code')
+              ).short_name,
+              10
+          );
+        }
+        this.apiService.getPets(zip).subscribe(response => {
+          console.log(response);
+          this.pets = response.data;
+          this.included = response.included;
+        });
+      });
     });
   }
 }

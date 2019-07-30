@@ -8,11 +8,11 @@ import { environment } from '../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  API_KEY = environment.apiKey;
+  RESCUEGROUPS_KEY: string = environment.RESCUEGROUPS_KEY;
 
   constructor(private httpClient: HttpClient) {}
 
-  public getPets() {
+  public getPets(zip) {
     const url =
       'https://api.rescuegroups.org/v5/public/animals/search/available/';
     const queryOptions = {
@@ -43,20 +43,26 @@ export class ApiService {
       options: 'meta',
       sort: '-animals.createdDate'
     };
-    const query = qs.stringify(queryOptions, { arrayFormat: 'comma'});
-    const data = {
-      filters: [],
-      filterRadius: {
-        miles: 100,
-        postalcode: 90210
+    const query = qs.stringify(queryOptions, { arrayFormat: 'comma' });
+    const payload = {
+      data: {
+        filters: [],
+        filterRadius: {
+          miles: 100,
+          postalcode: zip
+        }
       }
     };
     const options = {
       headers: new HttpHeaders({
-        Authorization: this.API_KEY,
+        Authorization: this.RESCUEGROUPS_KEY,
         'Content-Type': 'application/json'
       })
     };
-    return this.httpClient.post<Response>(`${url}?${query}`, data, options);
+    return this.httpClient.post<Response>(
+      `${url}?${query}`,
+      payload,
+      options
+    );
   }
 }
