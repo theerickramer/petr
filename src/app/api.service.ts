@@ -39,7 +39,6 @@ export class ApiService {
         'videos',
         'videourls'
       ],
-      limit: '10',
       options: 'meta',
       sort: '-animals.createdDate'
     };

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { environment } from '../environments/environment';
 import { ApiService } from './api.service';
 
@@ -9,9 +10,10 @@ import { ApiService } from './api.service';
 })
 export class AppComponent implements OnInit {
   title = 'Petr';
-  pets: any[];
+  pets = new MatTableDataSource<any[]>([]);
   included: any[];
-
+  columnsToDisplay = ['image', 'name'];
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   constructor(private apiService: ApiService) {}
   public getPicUrl(picturesData: any[]) {
     const placeholder =
@@ -58,7 +60,8 @@ export class AppComponent implements OnInit {
     this.getZip().then(zip => {
       this.apiService.getPets(zip).subscribe(response => {
         console.log(response);
-        this.pets = response.data;
+        this.pets.data = response.data;
+        this.pets.paginator = this.paginator;
         this.included = response.included;
       });
     });

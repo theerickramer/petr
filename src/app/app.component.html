@@ -3,12 +3,26 @@
   <h1>
     {{ title }}
   </h1>
-  <ul *ngFor="let pet of pets">
-    <li>
-      <img src="{{getPicUrl(pet.relationships.pictures.data)}}">
-      {{pet.attributes.name}}
-    </li>
-  </ul>
+  <mat-table [dataSource]="pets">
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef>Image</th>
+      <td mat-cell *matCellDef="let pet">
+        <img src="{{ getPicUrl(pet.relationships.pictures.data) }}" />
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let pet">{{ pet.attributes.name }}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+  </mat-table>
+
+  <mat-paginator
+    [length]="pets ? pets.length : 0"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+  ></mat-paginator>
 </div>
 
 <router-outlet></router-outlet>
