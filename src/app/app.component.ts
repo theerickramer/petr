@@ -25,27 +25,33 @@ export class AppComponent implements OnInit {
   }
   public getZip() {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(position => {
-        let zip = 90210;
-        const { latitude, longitude } = position.coords;
-        const geocoder = new google.maps.Geocoder();
-        const latlng = new google.maps.LatLng(latitude, longitude);
-        geocoder.geocode({ location: latlng }, (results, status) => {
-          if (String(status) === 'OK') {
-            zip = parseInt(
-              results
-                .find(result => result.types.includes('postal_code'))
-                .address_components.find(component =>
-                  component.types.includes('postal_code')
-                ).short_name,
-              10
-            );
-          } else {
-            reject(status);
-          }
-          resolve(zip);
+      const cookiedZip = document.cookie.match(/zip=(\d{5})/);
+      if (cookiedZip) {
+        resolve(parseInt(cookiedZip[1], 10));
+      } else {
+        navigator.geolocation.getCurrentPosition(position => {
+          let zip = 90210;
+          const { latitude, longitude } = position.coords;
+          const geocoder = new google.maps.Geocoder();
+          const latlng = new google.maps.LatLng(latitude, longitude);
+          geocoder.geocode({ location: latlng }, (results, status) => {
+            if (String(status) === 'OK') {
+              zip = parseInt(
+                results
+                  .find(result => result.types.includes('postal_code'))
+                  .address_components.find(component =>
+                    component.types.includes('postal_code')
+                  ).short_name,
+                10
+              );
+            } else {
+              reject(status);
+            }
+            document.cookie = `zip=${zip};max-age=86400`; // set a cookie for 24 hours
+            resolve(zip);
+          });
         });
-      });
+      }
     });
   }
   ngOnInit() {
