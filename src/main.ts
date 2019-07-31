@@ -8,6 +8,7 @@ if (environment.production) {
   enableProdMode();
 }
 
+// index.html is not a template and we need to use environment variable
 const googleMapsScript = document.createElement('script');
 googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=${environment.GOOGLE_API_KEY}`;
 document.head.appendChild(googleMapsScript);
